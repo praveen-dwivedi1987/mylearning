@@ -1,0 +1,8 @@
+--- #simple playbook
+- hosts: localhost
+  become: true
+  tasks:
+     - name: create new file
+       file:
+          path: /tmp/testfile
+          state: touch
