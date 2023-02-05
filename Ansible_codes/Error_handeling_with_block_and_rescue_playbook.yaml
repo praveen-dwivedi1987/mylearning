@@ -1,0 +1,42 @@
+--- #this is to test block and rescue
+- hosts: all
+  become: true
+  vars:
+    sft: httpd1
+  tasks:
+    - block:
+      - name: install software
+        yum:
+          name: " {{sft }}"
+          state: latest
+        register: main_block
+      - name: creat file
+        file:
+          path: /tmp/pra.txt
+          state: touch
+      rescue:
+      - name: install alternate software
+        yum:
+          name: httpd
+          state: latest
+        register: alternate_block
+      always:
+      - name: output of main block
+        debug:
+          msg: "{{ main_block.changed }}"
+      - name: output of main block
+        debug:
+          msg: "{{ main_block.results }}"
+
+      - name: output of alternate_block
+        debug:
+          msg: "{{ alternate_block.results }}"
+
+
+    - name: this is single task
+      command: echo "THIS IS TO CHECK SINGLE TASKS"
+
+    - block:
+       - name: this is to run from other block
+         command: echo "this is running from second block"
+

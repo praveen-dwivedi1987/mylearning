@@ -1,0 +1,53 @@
+--- #ansible test
+- hosts: node2
+  become: true
+  tasks:
+    - name: create new file
+      file:
+        path: /tmp/chk.txt
+        state: touch
+
+- hosts: all
+  become: yes
+  vars_files:
+   - file.yaml
+  tasks:
+    - name: check if file exitst
+      stat:
+        path: /tmp/chk.txt
+      register: st
+
+    - name: create entry in file
+      lineinfile:
+        path: /tmp/chk.txt
+        line: "this is condition line"
+      when: st.stat.exists == true
+
+    - name: create file if not exists
+      file:
+        path: /tmp/chk.txt
+        state: touch
+      when: st.stat.exists == false
+      notify: edit file
+
+    - name: create file with loop
+      file:
+        path: "/tmp/{{ item }}"
+        state: touch
+      loop:  "{{ file_name }}"
+
+    - name: create file with loop within task
+      file:
+        path: "/tmp/{{ item }}"
+        state: touch
+      loop:
+        - file4
+        - file5
+
+  handlers:
+    - name: create entry in file
+      lineinfile:
+        path: /tmp/chk.txt
+        line: create entry in file from handler
+      listen: edit file
+

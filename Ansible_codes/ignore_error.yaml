@@ -1,0 +1,25 @@
+--- #this is for error handleing
+- hosts: all
+  become: true
+  vars:
+    sft: httpd1
+  tasks:
+     - name: this is to install httpd
+       yum:
+         name: "{{ sft }}"
+         state: latest
+       ignore_errors: true
+       tags: install
+
+     - name: this is to create a test file
+       file:
+         path: /tmp/chk.txt
+         state: touch
+       tags: newfile
+
+     - name: copy big file
+       copy:
+         src: /tmp/testfile.txt
+         dest: /tmp/b.txt
+       tags: copyfile
+

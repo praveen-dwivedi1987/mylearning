@@ -1,0 +1,44 @@
+Variable Playbook:
+
+
+--- #this is for variable test
+- hosts: localhost
+  tasks:
+    - name: create file with name
+      file:
+        path: "/tmp/{{ name }}"
+        state: touch
+
+    - name: insert name in first line
+      lineinfile:
+        path:  "/tmp/{{ name }}"
+        insertbefore: BOF
+        line: "name: {{ name }}"
+        backup: True
+    - name
+
+    - name: insert state name
+      lineinfile:
+        path: "/tmp/{{ name }}"
+        regexp: MP
+        line: "State: {{ state['name'] }} "
+
+    - name: insert city name
+      lineinfile:
+        path: /tmp/{{ name }}
+        line: "City: {{ state['city']['name'] }}"
+
+
+Vars_yaml:
+name: praveen
+surname: dwivedi
+city: rewa
+state:
+  name: MP
+  city:
+    name: rewa
+    code: MP17
+
+
+
+
